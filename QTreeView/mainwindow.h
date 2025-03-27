@@ -4,13 +4,51 @@
 #include <QMainWindow>
 #include <QTreeView>
 #include <QDebug>
+#include <QStyledItemDelegate>
+#include <QApplication>
+#include <QPainter>
 
+class AlignDelegate : public QStyledItemDelegate {
+public:
+    using QStyledItemDelegate::QStyledItemDelegate;
+
+    void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override {
+        QStyleOptionViewItem opt = option;
+        initStyleOption(&opt, index);
+
+        // 绘制复选框
+        QRect checkboxRect = QRect(opt.rect.left() + 2, opt.rect.center().y() - 8, 16, 16);
+        bool checked = (index.data(Qt::CheckStateRole).toInt() == Qt::Checked);
+        QStyle::State state = checked ? QStyle::State_On : QStyle::State_Off;
+        QApplication::style()->drawPrimitive(QStyle::PE_IndicatorItemViewItemCheck, &opt, painter);
+
+        // 调整文本位置
+        QRect textRect = opt.rect.adjusted(24, 0, 0, 0); // 文本向右偏移24px
+        painter->drawText(textRect, Qt::AlignLeft | Qt::AlignVCenter, index.data().toString());
+    }
+
+    QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const override {
+        return QSize(200, 24); // 固定项的大小
+    }
+};
 
 class DynamicTreeView : public QTreeView {
 public:
     explicit DynamicTreeView(QWidget *parent = nullptr) : QTreeView(parent) {
         setStyleSheet("QTreeView { border: none; padding: 0; }");
+//        setStyleSheet(
+//               "QTreeView::item {"
+//               "    height: 24px;"          // 固定项的高度
+//               "    padding-left: 4px;"     // 文本左侧留出空间
+//               "    spacing: 6px;"          // 复选框与文本的间距
+//               "}"
+//               "QTreeView::indicator {"     // 控制复选框大小
+//               "    width: 18px;"
+//               "    height: 18px;"
+//               "}"
+//           );
         setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+//        setItemDelegate(new AlignDelegate(this));
     }
     QSize sizeHint() const override {
         // 计算可见行数（包含展开的子项）
@@ -56,4 +94,8 @@ private:
     void setupModel(DynamicTreeView *tv);
     void connectSignals();
 };
+
+
+
+
 #endif // MAINWINDOW_H

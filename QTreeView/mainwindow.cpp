@@ -53,11 +53,15 @@ void MainWindow::setupModel(DynamicTreeView *tv)
    // 创建三级嵌套结构
    for (int i = 1; i <= 3; ++i) {
        QStandardItem *root = new QStandardItem(QString("Root %1").arg(i));
+       root->setCheckable(true);  // 启用复选框
+       root->setEditable(false);  // 禁止编辑文本
        model->appendRow(root);
 
        for (int j = 1; j <= 2; ++j) {
            QStandardItem *child = new QStandardItem(QString("Child %1-%2").arg(i).arg(j));
            root->appendRow(child);
+           child->setCheckable(true);
+           child->setEditable(false);
 
            for (int k = 1; k <= 2; ++k) {
                child->appendRow(new QStandardItem(QString("Leaf %1-%2-%3").arg(i).arg(j).arg(k)));
@@ -72,7 +76,7 @@ void MainWindow::setupModel(DynamicTreeView *tv)
 void MainWindow::connectSignals()
 {
     auto updateLayout = [this]{
-        tree1->updateGeometry();
+        tree1->updateGeometry(); //会强制出发sizehint进行重新计算
         tree2->updateGeometry();
         centralWidget()->layout()->activate();
         qDebug() << "tree1";
