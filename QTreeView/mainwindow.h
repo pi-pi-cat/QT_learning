@@ -8,6 +8,9 @@
 #include <QApplication>
 #include <QPainter>
 
+// Forward declarations
+class LeafButtonDelegate;
+
 class AlignDelegate : public QStyledItemDelegate {
 public:
     using QStyledItemDelegate::QStyledItemDelegate;
@@ -36,19 +39,7 @@ class DynamicTreeView : public QTreeView {
 public:
     explicit DynamicTreeView(QWidget *parent = nullptr) : QTreeView(parent) {
         setStyleSheet("QTreeView { border: none; padding: 0; }");
-//        setStyleSheet(
-//               "QTreeView::item {"
-//               "    height: 24px;"          // 固定项的高度
-//               "    padding-left: 4px;"     // 文本左侧留出空间
-//               "    spacing: 6px;"          // 复选框与文本的间距
-//               "}"
-//               "QTreeView::indicator {"     // 控制复选框大小
-//               "    width: 18px;"
-//               "    height: 18px;"
-//               "}"
-//           );
         setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-//        setItemDelegate(new AlignDelegate(this));
     }
     QSize sizeHint() const override {
         // 计算可见行数（包含展开的子项）
@@ -74,7 +65,6 @@ protected:
     void updateGeometries() override {
         QTreeView::updateGeometries();
     }
-
 };
 
 class MainWindow : public QMainWindow
@@ -85,17 +75,19 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+private slots:
+    void onLeafClicked(const QModelIndex &leafIndex);
+    void onLeafDeleted(const QModelIndex &leafIndex);
 
 private:
     DynamicTreeView *tree1;
     DynamicTreeView *tree2;
+    LeafButtonDelegate *leafDelegate;
+
 private:
     DynamicTreeView* createTreeView(const QString &name);
     void setupModel(DynamicTreeView *tv);
     void connectSignals();
 };
-
-
-
 
 #endif // MAINWINDOW_H
