@@ -8,7 +8,7 @@
 #include <QApplication>
 #include <QPainter>
 
-// Forward declarations
+// 前向声明
 class LeafButtonDelegate;
 
 class AlignDelegate : public QStyledItemDelegate {
@@ -40,7 +40,10 @@ public:
     explicit DynamicTreeView(QWidget *parent = nullptr) : QTreeView(parent) {
         setStyleSheet("QTreeView { border: none; padding: 0; }");
         setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+        setMouseTracking(true);  // 启用鼠标追踪
+        viewport()->setMouseTracking(true);  // 视口也需要启用鼠标追踪
     }
+
     QSize sizeHint() const override {
         // 计算可见行数（包含展开的子项）
         int visibleRows = calculateVisibleRows(rootIndex());
@@ -48,6 +51,7 @@ public:
         height = qMin(height, 200); // 限制最大高度
         return {width(), height};
     }
+
 private:
     int calculateVisibleRows(const QModelIndex &parent) const {
         int count = 0;
@@ -61,6 +65,7 @@ private:
         }
         return count;
     }
+
 protected:
     void updateGeometries() override {
         QTreeView::updateGeometries();

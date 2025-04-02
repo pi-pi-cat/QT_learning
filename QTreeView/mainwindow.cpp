@@ -71,7 +71,7 @@ void MainWindow::setupModel(DynamicTreeView *tv)
             child->setCheckable(true);
             child->setEditable(false);
 
-            for (int k = 1; k <= 2; ++k) {
+            for (int k = 1; k <= 4; ++k) {
                 QStandardItem *leaf = new QStandardItem(QString("Leaf %1-%2-%3").arg(i).arg(j).arg(k));
                 leaf->setEditable(false);
                 child->appendRow(leaf);
