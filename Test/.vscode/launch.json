@@ -1,0 +1,75 @@
+{
+    // 使用 IntelliSense 了解相关属性。 
+    // 悬停以查看现有属性的描述。
+    // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "(lldb) 启动", // 模板，可选择保留或删除
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "输入程序名称，例如 ${workspaceFolder}/a.out",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "lldb"
+        },
+        {
+            "name": "debug",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/bin/${command:shellCommand.execute}",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [
+                {
+                    "name": "DYLD_LIBRARY_PATH",
+                    "value": "/opt/homebrew/Cellar/qt@5/5.15.16/lib:${env:DYLD_LIBRARY_PATH}"
+                },
+                {
+                    "name": "PATH",
+                    "value": "/opt/homebrew/Cellar/qt@5/5.15.16/bin:${env:PATH}"
+                }
+            ],
+            "externalConsole": false,
+            "MIMode": "lldb",
+            "preLaunchTask": "make-debug"
+        },
+        {
+            "name": "release",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/bin/${command:shellCommand.execute}",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [
+                {
+                    "name": "DYLD_LIBRARY_PATH",
+                    "value": "/opt/homebrew/Cellar/qt@5/5.15.16/lib:${env:DYLD_LIBRARY_PATH}"
+                },
+                {
+                    "name": "PATH",
+                    "value": "/opt/homebrew/Cellar/qt@5/5.15.16/bin:${env:PATH}"
+                }
+            ],
+            "externalConsole": false,
+            "MIMode": "lldb",
+            "preLaunchTask": "make-release"
+        }
+    ],
+    "inputs": [
+        {
+            "id": "getDemoPath",
+            "type": "command",
+            "command": "shellCommand.execute",
+            "args": {
+                "command": "demo=$(cat active_demo.conf | grep ACTIVE_DEMO | cut -d'=' -f2 | tr -d ' ') && echo $demo.app/Contents/MacOS/$demo",
+                "cwd": "${workspaceFolder}"
+            }
+        }
+    ]
+}

@@ -1,0 +1,120 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "mkdir",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "command": "mkdir",
+            "args": [
+                "-p",
+                "build"
+            ]
+        },
+        {
+            "label": "qmake-debug",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}/build"
+            },
+            "command": "/opt/homebrew/Cellar/qt@5/5.15.16/bin/qmake",
+            "args": [
+                "../${workspaceFolderBasename}.pro",
+                "-spec",
+                "macx-clang",
+                "CONFIG+=debug",
+                "CONFIG+=qml_debug",
+                "CONFIG+=sdk_no_version_check"
+            ],
+            "dependsOn": [
+                "mkdir"
+            ]
+        },
+        {
+            "label": "make-debug",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}/build"
+            },
+            "command": "make",
+            "args": [
+                "-j8"
+            ],
+            "dependsOn": [
+                "qmake-debug"
+            ]
+        },
+        {
+            "label": "run-debug",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "command": "chmod +x run_demo.sh && ./run_demo.sh",
+            "dependsOn": [
+                "make-debug"
+            ],
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "qmake-release",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}/build"
+            },
+            "command": "/opt/homebrew/Cellar/qt@5/5.15.16/bin/qmake",
+            "args": [
+                "../${workspaceFolderBasename}.pro",
+                "-spec",
+                "macx-clang",
+                "CONFIG+=qtquickcompiler",
+                "CONFIG+=sdk_no_version_check"
+            ],
+            "dependsOn": [
+                "mkdir"
+            ]
+        },
+        {
+            "label": "make-release",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}/build"
+            },
+            "command": "make",
+            "args": [
+                "-j8"
+            ],
+            "dependsOn": [
+                "qmake-release"
+            ]
+        },
+        {
+            "label": "run-release",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "command": "chmod +x run_demo.sh && ./run_demo.sh",
+            "dependsOn": [
+                "make-release"
+            ]
+        },
+        {
+            "label": "clean",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}/build"
+            },
+            "command": "make",
+            "args": [
+                "clean"
+            ]
+        }
+    ]
+}
